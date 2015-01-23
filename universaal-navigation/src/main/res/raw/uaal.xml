@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<application>
+   <permissions>
+      <mw.bus.service>
+         <advertisement>
+            <title>Get IP Address</title>
+            <description>SERVICE CALLEE PROFILE: Get IP Address</description>
+            <action>org.poseidon_project.universaal.GET_IP_ADDRESS</action>
+            <category>android.intent.category.DEFAULT</category>
+            <replyAction>org.poseidon_project.universaal.REPLY_GET_IP_ADDRESS</replyAction>
+            <replyCategory>android.intent.category.DEFAULT</replyCategory>
+            <input>
+                <key>var1</key>
+                <value>ip_address</value>
+            </input>
+            <output>
+                <key>http://ontology.igd.fhg.de/LightingServer.owl#controlledLamps</key>
+                <value>http://ontology.igd.fhg.de/LightingServer.owl#controlledLamp{lamp_number_array}@http://ontology.universaal.org/Lighting.owl#LightSource</value>
+            </output>
+            <serialization>
+               <![CDATA[
+@prefix ns: <http://www.daml.org/services/owl-s/1.1/Service.owl#> .
+@prefix ns1: <http://www.daml.org/services/owl-s/1.1/Process.owl#> .
+@prefix ns2: <http://www.daml.org/services/owl-s/1.1/Profile.owl#> .
+@prefix : <http://ontology.igd.fhg.de/LightingServer.owl#> .
+_:BN000000 ns:presentedBy :getControlledLamps ;
+  a ns2:Profile ;
+  ns2:has_process :getControlledLampsProcess ;
+  ns2:hasResult [
+    ns1:withOutput [
+        a ns1:OutputBinding ;
+        ns1:toParam :controlledLamps ;
+        ns1:valueForm """
+          @prefix : <http://ontology.universAAL.org/Service.owl#> .
+          _:BN000000 a :PropertyPath ;
+            :thePath (
+              <http://ontology.universaal.org/Lighting.owl#controls>
+            ) .
+          """^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>
+      ] ;
+    a ns1:Result
+  ] ;
+  ns2:hasOutput :controlledLamps .
+:controlledLamps a ns1:Output ;
+  ns1:parameterType "http://ontology.universaal.org/Lighting.owl#LightSource"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+:getControlledLamps a :LightingService ,
+    <http://ontology.universaal.org/Lighting.owl#Lighting> ;
+  ns:presents _:BN000000 .
+]]>
+            </serialization>
+         </advertisement>
+
+      </mw.bus.service>
+   </permissions>
+</application>

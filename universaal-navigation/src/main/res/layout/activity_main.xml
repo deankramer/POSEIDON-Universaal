@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}">
+    
+     <include layout="@layout/menu_topbar" />
+
+    <Button
+        android:id="@+id/btnFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnSettings"
+        android:layout_alignBottom="@+id/btnSettings"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="37dp"
+        android:drawableTop="@drawable/ic_launcher"
+        android:minHeight="125dp"
+        android:minWidth="125dp"
+        android:onClick="onSettingsClick"
+        android:text="@string/friends"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+
+    <Button
+        android:id="@+id/btnVideos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnSettings"
+        android:layout_alignLeft="@+id/btnSettings"
+        android:layout_marginBottom="27dp"
+        android:drawableTop="@drawable/ic_launcher"
+        android:minHeight="125dp"
+        android:minWidth="125dp"
+        android:onClick="onVideosClick"
+        android:text="@string/videos"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="84dp"
+        android:layout_marginRight="37dp"
+        android:drawableTop="@drawable/ic_launcher"
+        android:minHeight="125dp"
+        android:minWidth="125dp"
+        android:onClick="onSettingsClick"
+        android:text="@string/settings"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+
+    <Button
+        android:id="@+id/btnRoutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnVideos"
+        android:layout_alignBottom="@+id/btnVideos"
+        android:layout_alignLeft="@+id/btnFriends"
+        android:drawableTop="@drawable/ic_launcher"
+        android:minHeight="125dp"
+        android:minWidth="125dp"
+        android:onClick="onRoutesClick"
+        android:text="@string/routes"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+
+    
+
+</RelativeLayout>
