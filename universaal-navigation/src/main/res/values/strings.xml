@@ -12,6 +12,9 @@
     <string name="done_label">Done</string>
 
 
+    <string name="importNewRoute">Import</string>
+    <string name="importingRoute">Importing Route...</string>
+
 
 
     <!-- Weather Related -->
@@ -22,5 +25,8 @@
         don\'t forget a warm coat</string>
     <string name="coldAndRainForcast">Today it is forcasted to be cold and raining,
         don\'t forget a warm coat and umbrella</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

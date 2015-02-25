@@ -20,8 +20,11 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.poseidon_project.universaal.R;
+import org.poseidon_project.universaal.fragments.ImportRouteDialog;
 import org.poseidon_project.universaal.support.NavigationalDBImpl;
 import org.poseidon_project.universaal.support.POSEIDONRoute;
+import org.poseidon_project.universaal.support.RouteImporter;
+import org.poseidon_project.universaal.support.RouteReceiver;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,18 +32,25 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-public class RouteActivity extends Activity{
+public class RouteActivity extends Activity implements ImportRouteDialog.ImportRouteDialogListener{
 
 	private NavigationalDBImpl mDataBase;
 	private Context mContext;
+    private static final String LOGTAG = "POSEIDON-Navigation";
+    private ImportRouteDialog mImportFrag;
 
 	@Override
 	public void onCreate(Bundle bundle) {
@@ -54,11 +64,42 @@ public class RouteActivity extends Activity{
 
 	}
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.routesactivity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-	public void setupRouteChoices() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_import:
+                importNewRoute();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void importNewRoute() {
+        mImportFrag = ImportRouteDialog.newInstance();
+        mImportFrag.show(getFragmentManager(), "dialog");
+
+        DownloadNewRoutesTask dltask = new DownloadNewRoutesTask();
+        dltask.execute();
+
+    }
+
+    public void setupRouteChoices() {
 		List<POSEIDONRoute> routes = mDataBase.getAllRoutes();
 
 		LinearLayout viewGroup = (LinearLayout) findViewById(R.id.rootNode);
+        if (viewGroup.getChildCount()>0) {
+            viewGroup.removeAllViews();
+        }
 
 		for (final POSEIDONRoute route : routes) {
 			Button routeButton = new Button(mContext);
@@ -95,5 +136,53 @@ public class RouteActivity extends Activity{
 		}
 
 	}
+
+    @Override
+    public void onFinishDialog(boolean status) {
+
+        if (status) {
+                setupRouteChoices();
+        }
+
+    }
+
+    public class DownloadNewRoutesTask extends AsyncTask<Void, Integer, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... args) {
+
+            Context c = getApplicationContext();
+            RouteReceiver rr = new RouteReceiver(c);
+            RouteImporter ri = new RouteImporter(c);
+
+            String fl = rr.beginListening();
+            ri.importRouteArchive(fl);
+            return true;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d(LOGTAG, "Downloaded, importing...");
+            updateDialogPercent(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            Log.d(LOGTAG, "Downloaded, and imported!");
+            mImportFrag.updateProgressBar(100);
+            mImportFrag.updateText("Imported");
+        }
+
+        public void updateProgressBar(int percent) {
+            onProgressUpdate(percent);
+        }
+
+    }
+
+    public void updateDialogPercent (int percent) {
+        mImportFrag.updateProgressBar(percent);
+    }
+
 
 }

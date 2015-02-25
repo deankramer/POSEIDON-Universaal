@@ -24,13 +24,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.util.Log;
 
 import com.directions.route.MetaParser;
+
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.utils.IOUtils;
 
 /**
  * A class to import POSEIDON Navigation Archives
@@ -43,6 +47,7 @@ public class RouteImporter {
     private static final String routeRootFolder = "/POSEIDON/routes/";
 	private Context mContext;
 	private NavigationalDBImpl mDataBase;
+    private static final String LOGTAG = "RouteImporter";
 
 
 
@@ -143,9 +148,9 @@ public class RouteImporter {
             in = new FileInputStream(zipfile);
             out = new FileOutputStream(target);
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192];
             int read;
-            while ((read = in.read(buffer)) != -1)
+            while ((read = in.read(buffer)) >= 0)
             {
                 out.write(buffer, 0, read);
             }
@@ -172,12 +177,11 @@ public class RouteImporter {
             throws FileNotFoundException, IOException {
 
         FileInputStream fin = new FileInputStream(zipfile);
-		ZipInputStream zin = new ZipInputStream(fin);
+        ZipArchiveInputStream zin = new ZipArchiveInputStream(fin);
 
 		try {
-			ZipEntry entry;
-
-			while ((entry = zin.getNextEntry()) != null) {
+			ZipArchiveEntry entry;
+			while ((entry = zin.getNextZipEntry()) != null) {
 
                 String filename = entry.getName();
                 if (entry.isDirectory()) {
@@ -194,7 +198,7 @@ public class RouteImporter {
 				FileOutputStream fos = new FileOutputStream(path + "/" + filename);
 				BufferedOutputStream bos = new BufferedOutputStream(fos, buffer.length);
 
-				while ((size = zin.read(buffer, 0, buffer.length)) != -1) {
+                while ((size = zin.read(buffer)) >= 0) {
 					bos.write(buffer, 0, size);
 				}
 

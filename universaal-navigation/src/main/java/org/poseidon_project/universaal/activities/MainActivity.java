@@ -51,12 +51,12 @@ public class MainActivity extends Activity implements ContextReceiver {
 
 	private void checkForFirstTime() {
         RouteImporter ri = new RouteImporter(getApplicationContext());
-        if (ri.testUnzip(1)) {
-            Log.d("TestImport 1", "Worked");
-        }
-        if (ri.testUnzip(2)) {
-            Log.d("TestImport 2", "Worked");
-        }
+        // (ri.testUnzip(1)) {
+        //    Log.d("TestImport 1", "Worked");
+        //}
+        ///if (ri.testUnzip(2)) {
+        //    Log.d("TestImport 2", "Worked");
+        //}
 
 
 	}
