@@ -113,10 +113,14 @@ public class RouteImporter {
             if (zipfile != null) {
 
                 //read and unzip archive
-                unzipFile(directory, zipfile);
+                String routeID = unzipFile(directory, zipfile);
+
+                if (routeID.isEmpty()) {
+                    return false;
+                }
 
                 //parse meta.json
-                directory += directoryName;
+                directory += routeID;
                 MetaParser parser = new MetaParser(directory + "/meta.json", true);
                 POSEIDONRoute route = parser.parse();
 
@@ -173,11 +177,13 @@ public class RouteImporter {
     }
 
 
-    public static boolean unzipFile(String path, File zipfile)
+    public static String unzipFile(String path, File zipfile)
             throws FileNotFoundException, IOException {
 
         FileInputStream fin = new FileInputStream(zipfile);
         ZipArchiveInputStream zin = new ZipArchiveInputStream(fin);
+
+        String routeID = "";
 
 		try {
 			ZipArchiveEntry entry;
@@ -190,10 +196,13 @@ public class RouteImporter {
                     continue;
                 }
 
-                ensureTargetDirectoryExists(new File(path + filename).getParentFile());
+                File parent = new File(path + filename).getParentFile();
+                ensureTargetDirectoryExists(parent);
+
+                routeID = parent.getName();
 
 				int size;
-				byte[] buffer = new byte[1024];
+				byte[] buffer = new byte[8192];
 
 				FileOutputStream fos = new FileOutputStream(path + "/" + filename);
 				BufferedOutputStream bos = new BufferedOutputStream(fos, buffer.length);
@@ -211,7 +220,7 @@ public class RouteImporter {
 			fin.close();
 		}
 
-		return true;
+		return routeID;
 	}
 
     private static void ensureTargetDirectoryExists(File aTargetDir){

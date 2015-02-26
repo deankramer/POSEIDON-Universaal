@@ -68,7 +68,7 @@ public class RouteReceiver {
                 ServerSocket serverSocket = new ServerSocket(mPortNumber);
 
                 Socket clientSocket = serverSocket.accept();
-                clientSocket.getInputStream().read(fileInfo);
+               /* clientSocket.getInputStream().read(fileInfo);
 
                 String roundTrip = new String(fileInfo, "UTF-8");
                 String fileName = roundTrip.split(":")[0];
@@ -76,13 +76,14 @@ public class RouteReceiver {
                 String sizeS = String.valueOf(size / 1048576) + "MB";
                 roundTrip.indexOf("");
                 Log.d(LOGTAG, "file info: " + roundTrip);
-                byte[] mybytearray = new byte[8192];
-                fileLocation = mFileLocation + "/" + fileName;
+                //byte[] mybytearray = new byte[8192];*/
+                byte[] mybytearray = new byte[clientSocket.getReceiveBufferSize()];
+                fileLocation = mFileLocation + "/temp.zip";
                 File file = new File(fileLocation);
 
                 int dataSize;
                 int readData = 0;
-                int percent = 0;
+                //int percent = 0;
                 if (file.createNewFile()) {
                     out = new FileOutputStream(file);
                     bout = new BufferedOutputStream(out);
@@ -97,13 +98,13 @@ public class RouteReceiver {
                         }
 
                         bout.write(mybytearray, 0, dataSize);
-                        readData = readData + dataSize;
+                        /*readData = readData + dataSize;
                         String readDataS = String.valueOf(readData /1048576);
                         String text = readDataS + "MB / " + sizeS;
                         int newpercent = Math.round(readData / size);
                         if (newpercent != percent) {
                             percent = newpercent;
-                        }
+                        }*/
 
 
                     }
