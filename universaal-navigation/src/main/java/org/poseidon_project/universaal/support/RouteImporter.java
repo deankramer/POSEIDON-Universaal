@@ -44,7 +44,7 @@ import org.apache.commons.compress.utils.IOUtils;
  */
 public class RouteImporter {
 
-    private static final String routeRootFolder = "/POSEIDON/routes/";
+    private String mRouteRootFolder = "/POSEIDON/routes/";
 	private Context mContext;
 	private NavigationalDBImpl mDataBase;
     private static final String LOGTAG = "RouteImporter";
@@ -96,6 +96,12 @@ public class RouteImporter {
 		mDataBase = new NavigationalDBImpl(context);
 	}
 
+    public RouteImporter(Context context, String rootRouteFolder) {
+        mContext = context;
+        mDataBase = new NavigationalDBImpl(context);
+        mRouteRootFolder = rootRouteFolder;
+    }
+
     public boolean importRouteArchive(String file) {
 
         File zipfile = new File(file);
@@ -104,11 +110,11 @@ public class RouteImporter {
         String extDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
         try {
             //check if it has been moved to the root already. If not, move it.
-            if ( ! file.contains(extDirectory + routeRootFolder)) {
-               zipfile = moveFileToRootDirectory(zipfile);
+            if ( ! file.contains(extDirectory + mRouteRootFolder)) {
+               zipfile = moveFileToRootDirectory(zipfile, mRouteRootFolder);
             }
 
-            String directory = extDirectory + routeRootFolder;
+            String directory = extDirectory + mRouteRootFolder;
 
             if (zipfile != null) {
 
@@ -139,7 +145,7 @@ public class RouteImporter {
         return false;
     }
 
-    private static File moveFileToRootDirectory(File zipfile) {
+    private static File moveFileToRootDirectory(File zipfile, String routeRootFolder) {
 
         InputStream in = null;
         OutputStream out = null;
