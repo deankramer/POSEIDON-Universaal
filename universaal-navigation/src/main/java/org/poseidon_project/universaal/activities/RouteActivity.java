@@ -1,4 +1,4 @@
-/*Copyright 2014 POSEIDON Project
+/*Copyright 2015 POSEIDON Project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,14 +21,17 @@ import java.util.List;
 
 import org.poseidon_project.universaal.R;
 import org.poseidon_project.universaal.fragments.ImportRouteDialog;
+import org.poseidon_project.universaal.support.IConstants;
 import org.poseidon_project.universaal.support.NavigationalDBImpl;
 import org.poseidon_project.universaal.support.POSEIDONRoute;
 import org.poseidon_project.universaal.support.RouteImporter;
 import org.poseidon_project.universaal.support.RouteReceiver;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
@@ -42,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebIconDatabase;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -51,8 +55,11 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
 	private Context mContext;
     private static final String LOGTAG = "POSEIDON-Navigation";
     private ImportRouteDialog mImportFrag;
+    private BroadcastReceiver mUniversaalReceiver;
+    private String mDesktopIPAddress;
+    private String mPrefix = RouteActivity.class.getPackage().getName();
 
-	@Override
+    @Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		setContentView(R.layout.routes_activity);
@@ -152,6 +159,7 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
         protected Boolean doInBackground(Void... args) {
 
             Context c = getApplicationContext();
+
             RouteReceiver rr = new RouteReceiver(c);
             RouteImporter ri = new RouteImporter(c);
 
@@ -183,6 +191,38 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
     public void updateDialogPercent (int percent) {
         mImportFrag.updateProgressBar(percent);
     }
+
+    public void getDesktopIPAddress() {
+
+        if (mUniversaalReceiver != null) {
+            unregisterReceiver(mUniversaalReceiver);
+            mUniversaalReceiver = null;
+        }
+
+        mUniversaalReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(LOGTAG, "Got Response from universAAL Desktop System");
+
+
+            }
+        };
+
+        String actionNameForReply = mUniversaalReceiver.getClass().getName();
+
+        String category = Intent.CATEGORY_DEFAULT;
+
+        IntentFilter filter = new IntentFilter(actionNameForReply);
+        filter.addCategory(category);
+        registerReceiver(mUniversaalReceiver, filter);
+        
+        Intent intent = new Intent(mPrefix + ".GET_IP_ADDRESS");
+        intent.putExtra(IConstants.replyToActionArg, actionNameForReply);
+        intent.putExtra(IConstants.replyToCategoryArg, category);
+        intent.putExtra(IConstants.originDevice, "27.04.19.87");
+
+        sendBroadcast(intent);
+        }
 
 
 }

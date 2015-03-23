@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 POSEIDON Project
+ * Copyright 2015 POSEIDON Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,4 +31,11 @@ public interface IConstants {
     public final String reminderTime = "reminder_time";
     public final String reminderType = "reminder_type";
     public final String reminderText = "reminder_text";
+
+    //ipAddress related
+    public final String remoteDevice = "remoteDevice";
+    public final String originDevice = "originDevice";
+
+    public final String replyToActionArg 	= "replyToAction";
+    public final String replyToCategoryArg 	= "replyToCategory";
 }
