@@ -15,19 +15,31 @@ limitations under the License.
 package org.poseidon_project.universaal.activities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.poseidon_project.context.IContextReasoner;
 import org.poseidon_project.contexts.ContextReceiver;
 import org.poseidon_project.contexts.UIEvent;
 import org.poseidon_project.contexts.envir.LocationWeatherContext;
 import org.poseidon_project.contexts.envir.weather.BadWeatherContext;
+import org.poseidon_project.universaal.POSEIDONUniversaal;
 import org.poseidon_project.universaal.R;
+import org.poseidon_project.universaal.services.ExplicitIntentGenerator;
+import org.poseidon_project.universaal.services.INavigationalService;
 import org.poseidon_project.universaal.support.RouteImporter;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,21 +47,20 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
-public class MainActivity extends Activity implements ContextReceiver {
+public class MainActivity extends Activity{
+
+    private Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		BadWeatherContext weather = new BadWeatherContext(getApplicationContext(), this);
-        List<String> places = new ArrayList<String>();
-        places.add("London,UK");
-		weather.setPlace(places, true);
-		weather.start();
+        mContext = getApplicationContext();
 		checkForFirstTime();
-	}
 
-	private void checkForFirstTime() {
+    }
+
+    private void checkForFirstTime() {
         RouteImporter ri = new RouteImporter(getApplicationContext());
         // (ri.testUnzip(1)) {
         //    Log.d("TestImport 1", "Worked");
@@ -93,45 +104,5 @@ public class MainActivity extends Activity implements ContextReceiver {
 		startActivity(intent);
 	}
 
-	@Override
-	public void newContextValue(String name, long value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void newContextValue(String name, double value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void newContextValue(String name, boolean value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void newContextValue(String name, String value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void newContextValue(String name, Object value) {
-		Log.e("weather", "got weather object");
-	}
-
-	@Override
-	public void newContextValues(Map<String, String> values) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void newUIEvent(UIEvent event) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

@@ -17,8 +17,11 @@ package org.poseidon_project.universaal.activities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.poseidon_project.universaal.POSEIDONUniversaal;
 import org.poseidon_project.universaal.R;
 import org.poseidon_project.universaal.fragments.ImportRouteDialog;
 import org.poseidon_project.universaal.support.IConstants;
@@ -38,6 +41,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,6 +63,10 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
     private String mDesktopIPAddress;
     private String mPrefix = RouteActivity.class.getPackage().getName();
 
+    //Globals needed.
+    private BroadcastReceiver mContextBR;
+    private POSEIDONUniversaal mApplication;
+
     @Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -69,7 +77,44 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
 
 		setupRouteChoices();
 
+        setupBroadcastReceivers();
+
+        mApplication = (POSEIDONUniversaal) getApplication();
+
+        //Parameters needed for the weather contexts
+        HashMap<String, Object> paras = new HashMap<String, Object>();
+        ArrayList<String> locations = new ArrayList<String>();
+        locations.add("London,UK");
+        locations.add("Southend,UK");
+        paras.put("stringPlaces", locations);
+        try {
+            mApplication.mContextService.addContextRequirementWithParameters(mContext.getPackageName(), "BadWeatherContext", paras);
+
+            mApplication.mContextService.addContextRequirement(mContext.getPackageName(), "GPSIndoorOutdoorContext");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
 	}
+
+    private void setupBroadcastReceivers() {
+        IntentFilter filter = new IntentFilter("org.poseidon_project.context.CONTEXT_UPDATE");
+        mContextBR = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                Bundle bundle = intent.getExtras();
+
+                String contextName = bundle.getString("context_name");
+                String contextType = bundle.getString("context_value");
+
+                Log.d(contextName, contextType);
+
+            }
+        };
+
+        mContext.registerReceiver(mContextBR, filter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -225,4 +270,15 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
         }
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        try {
+            mApplication.mContextService.removeContextRequirement(mContext.getPackageName(), "BadWeatherContext");
+            mApplication.mContextService.removeContextRequirement(mContext.getPackageName(), "GPSIndoorOutdoorContext");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
