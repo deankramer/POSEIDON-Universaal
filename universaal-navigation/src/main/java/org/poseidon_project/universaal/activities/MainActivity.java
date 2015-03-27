@@ -14,6 +14,10 @@ limitations under the License.
 */
 package org.poseidon_project.universaal.activities;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +41,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -57,6 +63,43 @@ public class MainActivity extends Activity{
 		setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
 		checkForFirstTime();
+
+        //Check that the universAAL ontology exists.
+        checkForUniversaalOntology();
+    }
+
+    private void checkForUniversaalOntology() {
+        String filename = "org.poseidon.ontology-0.1.0-SNAPSHOT.jar";
+        String extDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/data/felix/ontologies";
+        File ontology = new File(extDirectory  + "/"  + filename);
+        if (! ontology.isFile()) {
+            AssetManager assetManager = mContext.getAssets();
+
+            InputStream in = null;
+            OutputStream out = null;
+
+            try {
+                in =  assetManager.open(filename);
+                out = new FileOutputStream(ontology);
+
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = in.read(buffer)) != -1)
+                {
+                    out.write(buffer, 0, read);
+                }
+                in.close();
+                in = null;
+                out.flush();
+                out.close();
+                out = null;
+
+            } catch (Exception e) {
+                Log.e("POSEIDON-Universaal", e.getStackTrace().toString());
+            }
+
+        }
+
 
     }
 
