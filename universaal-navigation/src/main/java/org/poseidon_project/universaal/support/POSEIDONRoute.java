@@ -28,6 +28,8 @@ public class POSEIDONRoute implements Serializable{
 	private static final long serialVersionUID = -2472801907949389479L;
 	private int mRouteId;
 	private String mTitle;
+    private String mStart_location;
+    private String mEnd_location;
 	private double mStart_longitude;
 	private double mStart_latitude;
 	private double mEnd_longitude;
@@ -68,6 +70,16 @@ public class POSEIDONRoute implements Serializable{
 	}
 
 
+    public String getStart_location() { return mStart_location; }
+
+
+    public void setStart_location(String startLocation) { mStart_location = startLocation;}
+
+
+    public String getEnd_location() { return mEnd_location; }
+
+
+    public void setEnd_location(String end_location) { mEnd_location = end_location; }
 
 
 	public double getStart_longitude() {

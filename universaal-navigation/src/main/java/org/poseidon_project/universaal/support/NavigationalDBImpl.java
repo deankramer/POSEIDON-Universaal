@@ -46,7 +46,7 @@ public class NavigationalDBImpl {
 		try {
 			SQLiteDatabase sqlite = mDbHelper.getReadableDatabase();
 			Cursor crsr = sqlite.rawQuery(
-					"Select _id, title, start_longitude, start_latitude, end_longitude" +
+					"Select _id, title, start_location, end_location, start_longitude, start_latitude, end_longitude" +
                             ", end_latitude, resource from saved_routes;",
 					null);
 			crsr.moveToFirst();
@@ -56,11 +56,13 @@ public class NavigationalDBImpl {
 				POSEIDONRoute route = new POSEIDONRoute();
 				route.setRouteId(crsr.getInt(0));
 				route.setTitle(crsr.getString(1));
-				route.setStart_longitude(Double.parseDouble(crsr.getString(2)));
-				route.setStart_latitude(Double.parseDouble(crsr.getString(3)));
-				route.setEnd_longitude(Double.parseDouble(crsr.getString(4)));
-				route.setEnd_latitude(Double.parseDouble(crsr.getString(5)));
-				route.setResource(crsr.getString(6));
+                route.setStart_location(crsr.getString(2));
+                route.setEnd_location(crsr.getString(3));
+				route.setStart_longitude(Double.parseDouble(crsr.getString(4)));
+				route.setStart_latitude(Double.parseDouble(crsr.getString(5)));
+				route.setEnd_longitude(Double.parseDouble(crsr.getString(6)));
+				route.setEnd_latitude(Double.parseDouble(crsr.getString(7)));
+				route.setResource(crsr.getString(8));
 				routes.add(route);
 				crsr.moveToNext();
 			}
@@ -77,7 +79,7 @@ public class NavigationalDBImpl {
 		try {
 			SQLiteDatabase sqlite = mDbHelper.getReadableDatabase();
 			Cursor crsr = sqlite.rawQuery(
-					"Select _id, title, start_longitude, start_latitude, end_longitude" +
+					"Select _id, title, start_location, end_location, start_longitude, start_latitude, end_longitude" +
                             ", end_latitude, resource from saved_routes where _id="
 					+ routeId + ";",
 					null);
@@ -88,11 +90,13 @@ public class NavigationalDBImpl {
 				POSEIDONRoute route = new POSEIDONRoute();
                 route.setRouteId(crsr.getInt(0));
                 route.setTitle(crsr.getString(1));
-                route.setStart_longitude(Double.parseDouble(crsr.getString(2)));
-                route.setStart_latitude(Double.parseDouble(crsr.getString(3)));
-                route.setEnd_longitude(Double.parseDouble(crsr.getString(4)));
-                route.setEnd_latitude(Double.parseDouble(crsr.getString(5)));
-                route.setResource(crsr.getString(6));
+                route.setStart_location(crsr.getString(2));
+                route.setEnd_location(crsr.getString(3));
+                route.setStart_longitude(Double.parseDouble(crsr.getString(4)));
+                route.setStart_latitude(Double.parseDouble(crsr.getString(5)));
+                route.setEnd_longitude(Double.parseDouble(crsr.getString(6)));
+                route.setEnd_latitude(Double.parseDouble(crsr.getString(7)));
+                route.setResource(crsr.getString(8));
 				crsr.moveToNext();
 				return route;
 			}
@@ -113,6 +117,8 @@ public class NavigationalDBImpl {
 			ContentValues initialValues = new ContentValues();
             initialValues.put("_id", route.getRouteId());
 			initialValues.put("title", route.getTitle());
+            initialValues.put("start_location", route.getStart_location());
+            initialValues.put("end_location", route.getEnd_location());
 			initialValues.put("start_longitude", route.getStart_longitude());
 			initialValues.put("start_latitude", route.getStart_latitude());
 			initialValues.put("end_longitude", route.getEnd_longitude());

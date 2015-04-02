@@ -46,6 +46,8 @@ public class MetaParser extends XMLParser{
 
             route.setRouteId(json.getInt("id"));
             route.setTitle(json.getString("title"));
+            route.setStart_location(json.getString("start_location"));
+            route.setEnd_location(json.getString("end_location"));
             route.setStart_longitude(json.getDouble("start_longitude"));
             route.setStart_latitude(json.getDouble("start_latitude"));
             route.setEnd_longitude(json.getDouble("end_longitude"));

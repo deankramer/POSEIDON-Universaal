@@ -24,6 +24,8 @@ public class DbHelper extends SQLiteOpenHelper{
 	private static final String DB_NAME = "POSEIDON-DB";
 	private static final String ROUTE_TABLE_CREATE = "create table saved_routes (_id integer primary key autoincrement,"
 			+ "title text,"
+            + "start_location text,"
+            + "end_location text,"
 			+ "start_longitude text,"
 			+ "start_latitude text,"
 			+ "end_longitude text,"
@@ -47,7 +49,7 @@ public class DbHelper extends SQLiteOpenHelper{
 	}
 
 	private void insertTestData(SQLiteDatabase db) {
-		//db.execSQL("insert into saved_routes values (1, 'Home', '-0.2254701', '51.586176', '0.5990241', '51.5211244', '')");
+		//db.execSQL("insert into saved_routes values (1, 'Going Home', 'Home', 'School', '-0.2254701', '51.586176', '0.5990241', '51.5211244', '')");
 
 	}
 
