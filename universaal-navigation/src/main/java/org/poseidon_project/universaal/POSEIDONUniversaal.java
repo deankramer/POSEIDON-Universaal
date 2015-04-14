@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.poseidon_project.context.IContextReasoner;
 import org.poseidon_project.universaal.services.ExplicitIntentGenerator;
@@ -46,11 +47,15 @@ public class POSEIDONUniversaal extends Application{
         mContext = getApplicationContext();
 
         Intent serviceIntent = new Intent(IContextReasoner.class.getName());
+
         serviceIntent = ExplicitIntentGenerator
-                .createExplicitFromImplicitIntent(mContext, serviceIntent);
+                    .createExplicitFromImplicitIntent(mContext, serviceIntent);
 
-        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
-
+        if (serviceIntent != null) {
+            bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+        } else {
+            Log.e("POSEIDON-Universaal", "Context Reasoner not installed!");
+        }
     }
 
 
