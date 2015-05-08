@@ -2,12 +2,12 @@
 <application>
    <permissions>
       <mw.bus.service>
-         <advertisement>
+         <requirement>
             <title>Get IP Address</title>
-            <description>SERVICE CALLEE PROFILE: Get IP Address</description>
-            <action>org.poseidon_project.universaal.GET_IP_ADDRESS</action>
+            <description>SERVICE CALLER PROFILE: Get IP Address</description>
+            <action>org.poseidon_project.universaal.activities.GET_IP_ADDRESS</action>
             <category>android.intent.category.DEFAULT</category>
-            <replyAction>org.poseidon_project.universaal.activities.RouteActivity$1</replyAction>
+            <replyAction>org.poseidon_project.universaal.activities.RouteActivity$3</replyAction>
             <replyCategory>android.intent.category.DEFAULT</replyCategory>
             <input>
                 <key>var1</key>
@@ -19,18 +19,20 @@
             </output>
             <serialization>
                <![CDATA[
-                    @prefix ns: <http://ontology.poseidon-project.org/DesktopConsumer.owl#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+                    @prefix ns: <http://www.daml.org/services/owl-s/1.1/Profile.owl#> .
 @prefix pvn: <http://ontology.universAAL.org/uAAL.owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ns1: <http://www.daml.org/services/owl-s/1.1/Process.owl#> .
+@prefix ns2: <http://www.daml.org/services/owl-s/1.1/Service.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ns3: <http://ontology.poseidon_project.org/DesktopConsumer.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix : <http://ontology.poseidon_project.org/Device#> .
 _:BN000000 a pvn:ServiceRequest ;
   pvn:requiredResult [
     ns1:withOutput (
       [
         a ns1:OutputBinding ;
-        ns1:toParam ns:remoteDevice ;
+        ns1:toParam ns3:remoteDevice ;
         ns1:valueForm """
           @prefix : <http://ontology.universAAL.org/Service.owl#> .
           _:BN000000 a :PropertyPath ;
@@ -42,29 +44,28 @@ _:BN000000 a pvn:ServiceRequest ;
     ) ;
     a ns1:Result
   ] ;
-  pvn:requestedService [
-    a :DeviceService ;
-    pvn:instanceLevelRestrictions (
-      [
+  pvn:requestedService :DeviceService1 .
+ns3:remoteDevice a ns1:Output .
+:DeviceService1 a :DeviceService ;
+  pvn:instanceLevelRestrictions (
+    [
+      a owl:Restriction ;
+      owl:allValuesFrom [
+        owl:hasValue "&var1;192.168.1.1&var1;"^^xsd:string ;
         a owl:Restriction ;
-        owl:allValuesFrom [
-          owl:hasValue :SmartPhone0 ;
-          a owl:Restriction ;
-          owl:onProperty :hasIPAddress
-        ] ;
-        owl:onProperty :uses
-      ]
-    ) ;
-    pvn:numberOfValueRestrictions "1"^^xsd:int
-  ] .
-ns:remoteDevice a ns1:Output .
-:SmartPhone0 a :SmartPhone ,
-    :Device ;
-  :hasIPAddress "192.168.1.1"^^xsd:string .
-                ]]>
+        owl:onProperty :hasIPAddress
+      ] ;
+      owl:onProperty :uses
+    ]
+  ) ;
+  ns2:presents [
+    ns2:presentedBy :DeviceService1 ;
+    a ns:Profile ;
+    ns:has_process :DeviceService1Process
+  ] ;
+  pvn:numberOfValueRestrictions "1"^^xsd:int . ]]>
             </serialization>
-         </advertisement>
-
+         </requirement>
       </mw.bus.service>
    </permissions>
 </application>

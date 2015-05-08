@@ -69,8 +69,15 @@ public class MainActivity extends Activity{
     }
 
     private void checkForUniversaalOntology() {
-        String filename = "org.poseidon.ontology-0.1.0-SNAPSHOT.jar";
+        String filename = "org.poseidon.ontology.jar";
         String extDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/data/felix/ontologies";
+        copyFile(extDirectory, filename);
+        copyFile(extDirectory, "activators.cfg");
+        copyFile(extDirectory, "ontologies.cfg");
+
+    }
+
+    private void copyFile(String extDirectory, String filename) {
         File ontology = new File(extDirectory  + "/"  + filename);
         if (! ontology.isFile()) {
             AssetManager assetManager = mContext.getAssets();
@@ -97,10 +104,7 @@ public class MainActivity extends Activity{
             } catch (Exception e) {
                 Log.e("POSEIDON-Universaal", e.getStackTrace().toString());
             }
-
         }
-
-
     }
 
     private void checkForFirstTime() {

@@ -38,10 +38,13 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.RemoteException;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -94,6 +97,8 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        getDesktopIPAddress();
 
 	}
 
@@ -260,13 +265,19 @@ public class RouteActivity extends Activity implements ImportRouteDialog.ImportR
         IntentFilter filter = new IntentFilter(actionNameForReply);
         filter.addCategory(category);
         registerReceiver(mUniversaalReceiver, filter);
-        
-        Intent intent = new Intent(mPrefix + ".GET_IP_ADDRESS");
+
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ip = wifiInfo.getIpAddress();
+        String ipaddress = Formatter.formatIpAddress(ip);
+
+        Intent intent = new Intent("org.poseidon_project.universaal.activities.GET_IP_ADDRESS");
         intent.putExtra(IConstants.replyToActionArg, actionNameForReply);
         intent.putExtra(IConstants.replyToCategoryArg, category);
-        intent.putExtra(IConstants.originDevice, "27.04.19.87");
+        intent.putExtra(IConstants.originDevice, ipaddress);
 
         sendBroadcast(intent);
+        Log.e("LOG", "Sent");
         }
 
 
