@@ -72,7 +72,6 @@ public class MainActivity extends Activity{
         String filename = "org.poseidon.ontology.jar";
         String extDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/data/felix/ontologies";
         copyFile(extDirectory, filename);
-        copyFile(extDirectory, "activators.cfg");
         copyFile(extDirectory, "ontologies.cfg");
 
     }
